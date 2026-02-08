@@ -1,0 +1,12 @@
+# Ignorer l'environnement virtuel
+.venv/
+
+# Ignorer les données lourdes
+data/
+
+# Ignorer les fichiers caches de Python
+__pycache__/
+*.pyc
+
+# Ignorer les configurations systèmes
+.DS_Store
