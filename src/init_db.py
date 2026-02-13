@@ -1,11 +1,11 @@
 import mysql.connector
 from mysql.connector import errorcode
 
-# --- 1. DÉFINITION DU PLAN (LES TABLES) ---
+# --- CONFIGURATION ---
 DB_NAME = 'movie_recommendation'
 TABLES = {}
 
-# Table pour les films (ID, Titre, Genres)
+# 1. Table definition: MOVIES (Catalog)
 TABLES['movies'] = (
     "CREATE TABLE `movies` ("
     "  `movieId` int NOT NULL,"
@@ -14,7 +14,7 @@ TABLES['movies'] = (
     "  PRIMARY KEY (`movieId`)"
     ") ENGINE=InnoDB")
 
-# Table pour les notes (Utilisateur, Film, Note, Date)
+# 2. Table definition: RATINGS (Interactions)
 TABLES['ratings'] = (
     "CREATE TABLE `ratings` ("
     "  `userId` int NOT NULL,"
@@ -24,36 +24,35 @@ TABLES['ratings'] = (
     "  FOREIGN KEY (`movieId`) REFERENCES `movies` (`movieId`)"
     ") ENGINE=InnoDB")
 
-# --- 2. CONFIGURATION DE LA CONNEXION ---
+# --- CONNECTION PARAMETERS ---
 config = {
     'user': 'root',
-    'password': '23INP01027@c',  # Ton mot de passe
+    'password': '23INP01027@c',  # Your password
     'host': 'localhost',
-    'port': 2004                 # Ton port Docker (externe)
+    'port': 2004                 # Your external Docker port
 }
 
-# --- 3. FONCTION DE CRÉATION DE LA BASE ---
 def create_database(cursor):
     try:
         cursor.execute(f"CREATE DATABASE {DB_NAME} DEFAULT CHARACTER SET 'utf8'")
-        print(f"✅ Base de données '{DB_NAME}' créée avec succès.")
+        print(f"✅ Database '{DB_NAME}' created successfully.")
     except mysql.connector.Error as err:
-        print(f"❌ Erreur lors de la création de la DB : {err}")
+        print(f"❌ Failed creating database: {err}")
         exit(1)
 
-# --- 4. EXÉCUTION PRINCIPALE ---
+# --- MAIN EXECUTION ---
 try:
-    # Connexion au serveur MySQL
-    print("🔌 Connexion au serveur MySQL...")
+    # Connect to MySQL Server
+    print("🔌 Connecting to MySQL server...")
     cnx = mysql.connector.connect(**config)
     cursor = cnx.cursor()
 
-    # Sélection ou Création de la Base de Données
+    # Select or Create Database
     try:
         cursor.execute(f"USE {DB_NAME}")
-        print(f"📂 Base de données '{DB_NAME}' sélectionnée.")
+        print(f"📂 Database '{DB_NAME}' selected.")
     except mysql.connector.Error as err:
-        print(f"⚠️ La base '{DB_NAME}' n'existe pas.")
+        print(f"⚠️ Database '{DB_NAME}' does not exist.")
         if err.errno == errorcode.ER_BAD_DB_ERROR:
             create_database(cursor)
             cnx.database = DB_NAME
@@ -61,23 +60,23 @@ try:
             print(err)
             exit(1)
 
-    # Création des Tables (Boucle)
+    # Create Tables
     for table_name in TABLES:
         table_description = TABLES[table_name]
         try:
-            print(f"🔨 Création de la table '{table_name}'...", end='')
+            print(f"🔨 Creating table '{table_name}'...", end='')
             cursor.execute(table_description)
-            print(" FAIT !")
+            print(" DONE!")
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print(" DÉJÀ EXISTANTE.")
+                print(" ALREADY EXISTS.")
             else:
-                print(f"\n❌ Erreur SQL : {err.msg}")
+                print(f"\n❌ SQL Error: {err.msg}")
 
-    # Fermeture propre
+    # Clean exit
     cursor.close()
     cnx.close()
-    print("\n🚀 SUCCÈS : L'infrastructure de données est prête !")
+    print("\n🚀 SUCCESS: Data infrastructure is ready!")
 
 except mysql.connector.Error as err:
-    print(f"❌ Erreur de connexion : {err}")
+    print(f"❌ Connection Error: {err}")
