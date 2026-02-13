@@ -1,11 +1,22 @@
+import os
+from dotenv import load_dotenv
 import mysql.connector
 from mysql.connector import errorcode
 
+# Load environment variables from .env file
+load_dotenv()
+
 # --- CONFIGURATION ---
-DB_NAME = 'movie_recommendation'
-TABLES = {}
+DB_NAME = os.getenv('MYSQL_DATABASE', 'movie_recommendation')
+config = {
+    'user': 'root',
+    'password': os.getenv('MYSQL_ROOT_PASSWORD'),
+    'host': os.getenv('MYSQL_HOST', 'localhost'),
+    'port': int(os.getenv('MYSQL_PORT', 2004))
+}
 
 # 1. Table definition: MOVIES (Catalog)
+TABLES = {}
 TABLES['movies'] = (
     "CREATE TABLE `movies` ("
     "  `movieId` int NOT NULL,"
@@ -23,14 +34,6 @@ TABLES['ratings'] = (
     "  `timestamp` int,"
     "  FOREIGN KEY (`movieId`) REFERENCES `movies` (`movieId`)"
     ") ENGINE=InnoDB")
-
-# --- CONNECTION PARAMETERS ---
-config = {
-    'user': 'root',
-    'password': '23INP01027@c',  # Your password
-    'host': 'localhost',
-    'port': 2004                 # Your external Docker port
-}
 
 def create_database(cursor):
     try:

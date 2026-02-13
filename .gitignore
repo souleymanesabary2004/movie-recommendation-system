@@ -10,3 +10,5 @@ __pycache__/
 
 # Ignorer les configurations systèmes
 .DS_Store
+# Fichiers sensibles
+.env
