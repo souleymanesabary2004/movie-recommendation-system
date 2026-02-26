@@ -20,11 +20,11 @@ spark = SparkSession.builder \
 movies_path = os.path.join("data", "raw", "movies.csv")
 
 print("="*50)
-print("🧹 SPARK CLEANING - MOVIES")
+print("SPARK CLEANING - MOVIES")
 print("="*50)
 
 # 1. READ RAW DATA
-print("\n📥 Reading raw movies...")
+print("\nReading raw movies...")
 df_raw = spark.read \
     .option("header", "true") \
     .option("inferSchema", "true") \
@@ -33,11 +33,11 @@ df_raw = spark.read \
 print(f"   Raw rows: {df_raw.count():,}")
 
 # 2. CHECK FOR MISSING VALUES
-print("\n🔍 Checking missing values:")
+print("\nChecking missing values:")
 df_raw.select([col(c).isNull().alias(c) for c in df_raw.columns]).show()
 
 # 3. CLEANING OPERATIONS
-print("\n🧼 Applying cleaning...")
+print("\nApplying cleaning...")
 
 df_clean = df_raw \
     .fillna({"genres": "(no genres listed)"}) \
@@ -47,7 +47,7 @@ df_clean = df_raw \
 print(f"   Clean rows: {df_clean.count():,}")
 
 # 4. ADD USEFUL COLUMNS
-print("\n✨ Adding computed columns...")
+print("\nAdding computed columns...")
 
 df_clean = df_clean \
     .withColumn("title_length", length(col("title"))) \
@@ -56,13 +56,13 @@ df_clean = df_clean \
                 .otherwise(size(split(col("genres"), "\|"))))
 
 # 5. SHOW RESULTS
-print("\n📋 Clean schema:")
+print("\nClean schema:")
 df_clean.printSchema()
 
-print("\n👀 Sample of cleaned data:")
+print("\nSample of cleaned data:")
 df_clean.select("movieId", "title", "genres", "title_length", "genre_count").show(10, truncate=False)
 
-print("\n📊 Statistics after cleaning:")
+print("\nStatistics after cleaning:")
 df_clean.describe(["title_length", "genre_count"]).show()
 
 # Stop Spark session

@@ -16,7 +16,7 @@ spark = SparkSession.builder \
 ratings_path = os.path.join("data", "raw", "ratings.csv")
 
 print("="*50)
-print("📥 SPARK INGESTION - RATINGS")
+print("SPARK INGESTION - RATINGS")
 print("="*50)
 
 # Read CSV with schema inference
@@ -26,14 +26,14 @@ df_ratings = spark.read \
     .csv(ratings_path)
 
 # Show basic info
-print(f"\n✅ Ratings loaded: {df_ratings.count():,} rows")
-print(f"\n📋 Schema:")
+print(f"\nRatings loaded: {df_ratings.count():,} rows")
+print(f"\nSchema:")
 df_ratings.printSchema()
 
-print(f"\n👀 First 5 rows:")
+print(f"\nFirst 5 rows:")
 df_ratings.show(5, truncate=False)
 
-print("\n📊 Statistics:")
+print("\nStatistics:")
 df_ratings.describe().show()
 
 # Stop Spark session
