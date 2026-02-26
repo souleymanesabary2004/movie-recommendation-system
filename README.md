@@ -15,7 +15,6 @@ An End-to-End Big Data & Machine Learning project using Docker, MySQL, and Pytho
 ---
 
 ## 📂 Project Structure
-
 movie-recommendation-system/
 │
 ├── src/
