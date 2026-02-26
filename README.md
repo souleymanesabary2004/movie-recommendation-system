@@ -14,61 +14,59 @@ An End-to-End Big Data & Machine Learning project using Docker, MySQL, and Pytho
 
 ---
 
-## 📂 Project Structure
 movie-recommendation-system/
-│
-├── src/
-│   ├── __init__.py
-│   ├── init_db.py
-│   ├── etl_pipeline.py
-│   ├── quality_checks.py
-│   │
-│   ├── ingestion/
-│   │   ├── __init__.py
-│   │   ├── ingest_movies.py
-│   │   └── ingest_ratings.py
-│   │
-│   └── processing/
-│       ├── __init__.py
-│       ├── clean_movies.py
-│       ├── clean_ratings.py
-│       ├── transform_movies.py
-│       └── transform_ratings.py
-│
-├── data/
-│   ├── raw/
-│   │   ├── movies.csv
-│   │   ├── ratings.csv
-│   │   ├── tags.csv
-│   │   └── links.csv
-│   │
-│   └── processed/
-│       ├── movies_clean.csv
-│       ├── movies_enriched.csv
-│       └── genre_counts.csv
-│
-├── notebooks/
-│   ├── 01_exploration_pandas.ipynb
-│   └── README.md
-│
-├── docs/
-│   └── data_dictionary.md
-│
-├── docker/
-│
-├── tests/
-│   └── __init__.py
-│
-├── run_pipeline.py
-├── user_stats.csv
-├── movie_stats.csv
-├── top_movies.csv
-├── .env.example
-├── .gitignore
-├── requirements.txt
-├── LICENSE
-└── README.md
-
+|
++-- src/
+|   +-- __init__.py
+|   +-- init_db.py
+|   +-- etl_pipeline.py
+|   +-- quality_checks.py
+|   |
+|   +-- ingestion/
+|   |   +-- __init__.py
+|   |   +-- ingest_movies.py
+|   |   +-- ingest_ratings.py
+|   |
+|   +-- processing/
+|       +-- __init__.py
+|       +-- clean_movies.py
+|       +-- clean_ratings.py
+|       +-- transform_movies.py
+|       +-- transform_ratings.py
+|
++-- data/
+|   +-- raw/
+|   |   +-- movies.csv
+|   |   +-- ratings.csv
+|   |   +-- tags.csv
+|   |   +-- links.csv
+|   |
+|   +-- processed/
+|       +-- movies_clean.csv
+|       +-- movies_enriched.csv
+|       +-- genre_counts.csv
+|
++-- notebooks/
+|   +-- 01_exploration_pandas.ipynb
+|   +-- README.md
+|
++-- docs/
+|   +-- data_dictionary.md
+|
++-- docker/
+|
++-- tests/
+|   +-- __init__.py
+|
++-- run_pipeline.py
++-- user_stats.csv
++-- movie_stats.csv
++-- top_movies.csv
++-- .env.example
++-- .gitignore
++-- requirements.txt
++-- LICENSE
++-- README.md
 ## ✅ Current Status (February 2026)
 
 ### Completed
