@@ -1,14 +1,58 @@
-# Ignorer l'environnement virtuel
+# Environnement virtuel
 .venv/
+venv/
+ENV/
+env/
 
-# Ignorer les données lourdes
-data/
+# Fichiers de données (trop lourds pour GitHub)
+data/raw/
+data/processed/*.csv
+data/processed/*.parquet
+*.csv
+*.parquet
 
-# Ignorer les fichiers caches de Python
+# Fichiers de modèles (trop lourds)
+*.pkl
+*.joblib
+*.h5
+*.model
+
+# Fichiers de cache Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
 
-# Ignorer les configurations systèmes
-.DS_Store
-# Fichiers sensibles
+# MLFlow experiments
+mlruns/
+mlflow.db
+
+# Jupyter Notebooks (checkpoints)
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Fichiers de configuration sensibles
 .env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Distributions / builds
+dist/
+build/
+*.egg-info/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
