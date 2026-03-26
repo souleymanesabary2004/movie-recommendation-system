@@ -74,87 +74,100 @@ movie-recommendation-system/
 │
 ├── src/
 │   ├── __init__.py
-│   ├── init_db.py              # Database initialization
-│   ├── etl_pipeline.py         # ETL with Pandas (Level 1)
-│   ├── quality_checks.py       # Data quality validation
+│   ├── init_db.py                     # Database initialization
+│   ├── etl_pipeline.py                # Pandas ETL (Level 1)
+│   ├── quality_checks.py              # Data validation
 │   │
-│   ├── ingestion/              # Spark ingestion scripts
+│   ├── ingestion/                     # Spark ingestion
 │   │   ├── __init__.py
 │   │   ├── ingest_movies.py
 │   │   └── ingest_ratings.py
 │   │
-│   ├── processing/             # Spark processing scripts
+│   ├── processing/                    # Spark processing
 │   │   ├── __init__.py
 │   │   ├── clean_movies.py
 │   │   ├── clean_ratings.py
 │   │   ├── transform_movies.py
 │   │   └── transform_ratings.py
 │   │
-│   ├── features/               # Feature engineering
+│   ├── features/                      # Feature engineering
 │   │   ├── __init__.py
 │   │   └── build_features.py
 │   │
-│   ├── models/                 # ML models training
+│   ├── models/                        # ML models training + inference
 │   │   ├── __init__.py
-│   │   ├── train_als.py        # ALS/SVD model
-│   │   ├── train_knn.py        # KNN collaborative filtering
-│   │   ├── train_content.py    # Content-based model
-│   │   ├── train_hybrid.py     # Hybrid model
-│   │   ├── evaluate.py         # Evaluation metrics
-│   │   └── predict.py          # Prediction functions
+│   │   ├── train_als.py               # ALS/SVD model
+│   │   ├── train_knn.py               # KNN model
+│   │   ├── train_content.py           # Content-based model
+│   │   ├── train_hybrid.py            # Hybrid model
+│   │   ├── evaluate.py                # Model evaluation
+│   │   └── predict.py                 # Prediction API
 │   │
-│   ├── api/                     # FastAPI application
+│   ├── api/                           # FastAPI backend
 │   │   ├── __init__.py
 │   │   ├── main.py
 │   │   ├── endpoints.py
 │   │   ├── schemas.py
 │   │   └── dependencies.py
 │   │
-│   └── dashboard/               # Streamlit dashboard
+│   └── dashboard/                     # Streamlit dashboard
 │       ├── __init__.py
 │       ├── app.py
 │       ├── components.py
 │       └── pages.py
 │
-├── notebooks/                   # Jupyter notebooks
+├── notebooks/                         # Jupyter notebooks
 │   ├── 01_exploration_pandas.ipynb
 │   └── 02_feature_engineering.ipynb
 │
-├── data/                         # Data files
-│   ├── raw/                      # Raw CSV files
+├── data/                              
+│   ├── raw/                            # Raw CSV files
 │   │   ├── movies.csv
-│   │   └── ratings.csv
-│   └── processed/                # Cleaned data
+│   │   ├── ratings.csv
+│   │   ├── tags.csv
+│   │   └── links.csv
+│   │
+│   └── processed/                      # Cleaned & engineered datasets
+│       ├── movies_clean.csv
+│       ├── movies_enriched.csv
+│       ├── genre_counts.csv
 │       ├── movie_features.csv
-│       └── user_movie_matrix.csv
+│       ├── user_movie_matrix.csv
+│       └── user_movie_matrix_norm.csv
 │
-├── docker/                       # Docker configuration
+├── docker/                             # Docker build files
 │   ├── api/
 │   │   └── Dockerfile
 │   └── dashboard/
 │       └── Dockerfile
 │
-├── tests/                         # Unit tests
-│   └── __init__.py
+├── tests/                              # Test suite
+│   ├── __init__.py
+│   └── test_smoke.py
 │
-├── docs/                          # Documentation
-│   └── data_dictionary.md
+├── docs/                               # FULL updated documentation
+│   ├── architecture.md
+│   ├── api.md
+│   ├── data_dictionary.md
+│   ├── contributing.md
+│   ├── security.md
+│   └── deployment.md
 │
-├── models/                         # Trained models (.pkl files)
+├── models/                             # Saved ML models
 │   ├── svd_model.pkl
 │   ├── knn_model.pkl
 │   ├── content_model.pkl
 │   └── hybrid_model.pkl
 │
-├── mlruns/                         # MLFlow experiments
+├── mlruns/                             # MLflow experiments
 │
-├── run_pipeline.py                 # Pipeline orchestrator
-├── docker-compose.yml              # Docker services
-├── .env.example                    # Environment variables template
-├── .gitignore                      # Git ignore file
-├── requirements.txt                # Python dependencies
-├── LICENSE                         # MIT License
-└── README.md                       # This file
+├── run_pipeline.py                     # ETL Level 2 Orchestrator
+├── docker-compose.yml                  # Core infrastructure (API + UI only)
+├── .env.example                        # Environment variable template
+├── .gitignore
+├── requirements.txt
+├── LICENSE
+└── README.md
 
 Notes
 
