@@ -1,0 +1,43 @@
+services:
+  # FastAPI Service
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    image: movie-api:latest
+    container_name: movie-api
+    ports:
+      - "8000:8000"
+    environment:
+      MYSQL_HOST: host.docker.internal
+      MYSQL_PORT: 2004
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: movie_recommendation
+    volumes:
+      - ./models:/app/models
+      - ./:/app                     # ← LIGNE AJOUTÉE
+    networks:
+      - movie-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Streamlit Dashboard Service
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/dashboard/Dockerfile
+    image: movie-dashboard:latest
+    container_name: movie-dashboard
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    networks:
+      - movie-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+# Network for inter-service communication
+networks:
+  movie-network:
+    driver: bridge
