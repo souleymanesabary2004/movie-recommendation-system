@@ -1,0 +1,125 @@
+# .github/workflows/ci.yml
+# CI/CD Pipeline pour le projet de recommandation de films
+
+name: CI - Tests Automatisés
+
+# Déclencheurs : quand on pousse du code ou qu'on crée une pull request
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+# Jobs à exécuter
+jobs:
+  test:
+    # Environnement d'exécution
+    runs-on: ubuntu-latest
+    
+    # Service MySQL pour les tests d'intégration
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: movie_recommendation_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    
+    steps:
+    # 1. Récupérer le code
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    # 2. Installer Python
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    # 3. Installer les dépendances
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+    
+    # 4. Créer les dossiers nécessaires
+    - name: Create data directories
+      run: |
+        mkdir -p data/raw data/processed
+    
+    # 5. Vérifier que les données existent
+    - name: Check data files
+      run: |
+        if [ ! -f data/raw/movies.csv ]; then
+          echo "Downloading movies.csv..."
+          curl -o data/raw/movies.csv https://files.grouplens.org/datasets/movielens/ml-latest-small/movies.csv
+        fi
+        if [ ! -f data/raw/ratings.csv ]; then
+          echo "Downloading ratings.csv..."
+          curl -o data/raw/ratings.csv https://files.grouplens.org/datasets/movielens/ml-latest-small/ratings.csv
+        fi
+        ls -la data/raw/
+    
+    # 6. Attendre que MySQL soit prêt
+    - name: Wait for MySQL
+      run: |
+        while ! mysqladmin ping -h"127.0.0.1" --silent; do
+          sleep 2
+        done
+    
+    # 7. Initialiser la base de données
+    - name: Initialize database
+      run: |
+        mysql -h 127.0.0.1 -u root -prootpassword movie_recommendation_test << EOF
+        CREATE TABLE IF NOT EXISTS movies (
+          movieId INT PRIMARY KEY,
+          title TEXT,
+          genres TEXT
+        );
+        CREATE TABLE IF NOT EXISTS ratings (
+          userId INT,
+          movieId INT,
+          rating FLOAT,
+          timestamp INT,
+          FOREIGN KEY (movieId) REFERENCES movies(movieId)
+        );
+        EOF
+    
+    # 8. Configurer les variables d'environnement pour les tests
+    - name: Setup test environment
+      run: |
+        echo "MYSQL_HOST=127.0.0.1" >> $GITHUB_ENV
+        echo "MYSQL_PORT=3306" >> $GITHUB_ENV
+        echo "MYSQL_ROOT_PASSWORD=rootpassword" >> $GITHUB_ENV
+        echo "MYSQL_DATABASE=movie_recommendation_test" >> $GITHUB_ENV
+    
+    # 9. Lancer les tests avec couverture
+    - name: Run tests with coverage
+      run: |
+        python -m pytest tests/ \
+          -v \
+          --cov=. \
+          --cov-report=term \
+          --cov-report=xml \
+          --ignore=tests/performance/test_model_performance.py \
+          --ignore=tests/performance/test_etl_performance.py
+    
+    # 10. Uploader le rapport de couverture (optionnel)
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+    
+    # 11. Résumé des tests
+    - name: Test summary
+      run: |
+        echo "✅ Tous les tests sont passés !"
+        echo "📊 Couverture : voir rapport ci-dessus"
