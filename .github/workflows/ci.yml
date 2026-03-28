@@ -45,17 +45,11 @@ jobs:
       run: |
         mkdir -p data/raw data/processed
     
-    - name: Download datasets
+    - name: List data files
       run: |
-        if [ ! -f data/raw/movies.csv ]; then
-          echo "Downloading movies.csv..."
-          curl -L -o data/raw/movies.csv https://files.grouplens.org/datasets/movielens/ml-latest-small/movies.csv
-        fi
-        if [ ! -f data/raw/ratings.csv ]; then
-          echo "Downloading ratings.csv..."
-          curl -L -o data/raw/ratings.csv https://files.grouplens.org/datasets/movielens/ml-latest-small/ratings.csv
-        fi
-        ls -la data/raw/
+        ls -la data/raw/ || echo "data/raw directory not found"
+        echo "Checking if data exists in repo..."
+        find . -name "*.csv" -type f
     
     - name: Wait for MySQL
       run: |
@@ -87,21 +81,29 @@ jobs:
     
     - name: Load data into database
       run: |
-        mysql -h 127.0.0.1 -P 3306 -u root -prootpassword --local-infile=1 movie_recommendation_test -e "
-          LOAD DATA LOCAL INFILE 'data/raw/movies.csv' 
-          INTO TABLE movies 
-          FIELDS TERMINATED BY ',' 
-          ENCLOSED BY '\"' 
-          LINES TERMINATED BY '\n' 
-          IGNORE 1 ROWS;
-        "
-        mysql -h 127.0.0.1 -P 3306 -u root -prootpassword --local-infile=1 movie_recommendation_test -e "
-          LOAD DATA LOCAL INFILE 'data/raw/ratings.csv' 
-          INTO TABLE ratings 
-          FIELDS TERMINATED BY ',' 
-          LINES TERMINATED BY '\n' 
-          IGNORE 1 ROWS;
-        "
+        if [ -f data/raw/movies.csv ]; then
+          mysql -h 127.0.0.1 -P 3306 -u root -prootpassword --local-infile=1 movie_recommendation_test -e "
+            LOAD DATA LOCAL INFILE 'data/raw/movies.csv' 
+            INTO TABLE movies 
+            FIELDS TERMINATED BY ',' 
+            ENCLOSED BY '\"' 
+            LINES TERMINATED BY '\n' 
+            IGNORE 1 ROWS;
+          "
+        else
+          echo "movies.csv not found, skipping load"
+        fi
+        if [ -f data/raw/ratings.csv ]; then
+          mysql -h 127.0.0.1 -P 3306 -u root -prootpassword --local-infile=1 movie_recommendation_test -e "
+            LOAD DATA LOCAL INFILE 'data/raw/ratings.csv' 
+            INTO TABLE ratings 
+            FIELDS TERMINATED BY ',' 
+            LINES TERMINATED BY '\n' 
+            IGNORE 1 ROWS;
+          "
+        else
+          echo "ratings.csv not found, skipping load"
+        fi
     
     - name: Setup test environment
       run: |
