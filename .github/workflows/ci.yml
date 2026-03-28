@@ -69,6 +69,7 @@ jobs:
     - name: Initialize database
       run: |
         mysql -h 127.0.0.1 -P 3306 -u root -prootpassword << EOF
+        SET GLOBAL local_infile = 1;
         CREATE DATABASE IF NOT EXISTS movie_recommendation_test;
         USE movie_recommendation_test;
         CREATE TABLE IF NOT EXISTS movies (
@@ -86,7 +87,7 @@ jobs:
     
     - name: Load data into database
       run: |
-        mysql -h 127.0.0.1 -P 3306 -u root -prootpassword movie_recommendation_test -e "
+        mysql -h 127.0.0.1 -P 3306 -u root -prootpassword --local-infile=1 movie_recommendation_test -e "
           LOAD DATA LOCAL INFILE 'data/raw/movies.csv' 
           INTO TABLE movies 
           FIELDS TERMINATED BY ',' 
@@ -94,7 +95,7 @@ jobs:
           LINES TERMINATED BY '\n' 
           IGNORE 1 ROWS;
         "
-        mysql -h 127.0.0.1 -P 3306 -u root -prootpassword movie_recommendation_test -e "
+        mysql -h 127.0.0.1 -P 3306 -u root -prootpassword --local-infile=1 movie_recommendation_test -e "
           LOAD DATA LOCAL INFILE 'data/raw/ratings.csv' 
           INTO TABLE ratings 
           FIELDS TERMINATED BY ',' 
