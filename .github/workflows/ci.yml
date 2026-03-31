@@ -1,7 +1,7 @@
 # .github/workflows/ci.yml
 # CI/CD Pipeline pour le projet de recommandation de films
 
-name: CI - Tests Automatisés
+name: CI - Automated Tests
 
 on:
   push:
