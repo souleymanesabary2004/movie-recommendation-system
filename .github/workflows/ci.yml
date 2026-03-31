@@ -45,12 +45,12 @@ jobs:
       run: |
         mkdir -p data/raw
 
-    - name: Download MovieLens dataset
+    - name: Download MovieLens dataset from GitHub repo
       run: |
-        curl -L -o data/raw/movies.csv https://files.grouplens.org/datasets/movielens/ml-latest-small/movies.csv
-        curl -L -o data/raw/ratings.csv https://files.grouplens.org/datasets/movielens/ml-latest-small/ratings.csv
-        echo "Data downloaded:"
-        ls -la data/raw/
+        curl -L -o data/raw/movies.csv https://raw.githubusercontent.com/souleymanesabary2004/movie-recommendation-system/main/data/raw/movies.csv
+        curl -L -o data/raw/ratings.csv https://raw.githubusercontent.com/souleymanesabary2004/movie-recommendation-system/main/data/raw/ratings.csv
+        echo "First 5 lines of movies.csv:"
+        head -5 data/raw/movies.csv
 
     - name: Wait for MySQL
       run: |
