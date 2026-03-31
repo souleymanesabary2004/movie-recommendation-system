@@ -5,10 +5,10 @@ ENV/
 env/
 
 # Fichiers de données (trop lourds pour GitHub)
-data/raw/
+# data/raw/  # Commenté car on garde movies.csv et ratings.csv pour CI
 data/processed/*.csv
 data/processed/*.parquet
-*.csv
+# *.csv  # Commenté car on garde movies.csv et ratings.csv
 *.parquet
 
 # Fichiers de modèles (trop lourds)
