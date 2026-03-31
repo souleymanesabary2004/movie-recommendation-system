@@ -105,9 +105,9 @@ jobs:
         echo "MYSQL_ROOT_PASSWORD=rootpassword" >> $GITHUB_ENV
         echo "MYSQL_DATABASE=movie_recommendation_test" >> $GITHUB_ENV
 
-    - name: Run all tests
+    - name: Run all tests (including performance)
       run: |
-        python -m pytest tests/ -v --ignore=tests/performance/
+        python -m pytest tests/ -v
 
     - name: Test summary
       run: |
