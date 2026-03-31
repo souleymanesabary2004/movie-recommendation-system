@@ -1,0 +1,5 @@
+Model,rmse,mae,explained_variance,avg_similarity,status
+SVD,0.7455973702571687,0.529559262721666,0.2973150302251911,,
+KNN,,,,0.15691943575384054,
+CONTENT,,,,0.9999998726134071,
+HYBRID,,,,,combined

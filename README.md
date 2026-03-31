@@ -1,5 +1,4 @@
-[![CI - Automated Tests](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml/badge.svg)](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml)
-
+[![CI - Automated Tests](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml)
 
 # 🎬 Movie Recommendation System
 
@@ -281,16 +280,80 @@ Phase 5: Deployment (Complete)
 | hybrid_model.pkl     | models/          | Hybrid model                   | —              |
 
 
-Next Steps (Phase 6-8)
-⏳ Unit and integration tests
 
-⏳ CI/CD with GitHub Actions
+## Phase 6: Testing & CI/CD (✅ COMPLETE)
 
-⏳ Performance monitoring
 
-⏳ Model retraining pipeline
+|        Test Type                       | Count  | Status |
+|----------------------------------------|--------|--------|
+| Data Tests (integrity, schema, values) | 16     | ✅ PASSED |
+| Unit Tests (ETL, models)               | 9      | ✅ PASSED |
+| Integration Tests (database, pipeline) | 13     | ✅ PASSED |
+| Performance Tests (optional)           | 3      | ⏭️ SKIPPED |
+| **TOTAL**                              | **41** | **✅ ALL PASSED** |
 
-⏳ Cloud deployment (AWS/Azure)
+### Test Coverage
+
+✅ **Data Integrity** : Files exist, not empty
+✅ **Data Schema** : Correct columns (movieId, title, genres, userId, rating, timestamp)
+✅ **Data Values** : Ratings between 0.5-5.0, no negative values, no empty titles
+✅ **ETL Functions** : Timestamp conversion, rating normalization, year extraction, genre split
+✅ **Model Functions** : User normalization, cosine similarity, hit rate, precision/recall
+✅ **Database** : MySQL connection, table schemas, foreign key integrity
+✅ **Pipeline** : Complete ETL workflow, data quality checks
+
+### CI/CD Pipeline (GitHub Actions)
+
+✅ **Automated on every push** : All tests run automatically
+✅ **Ubuntu runner** with MySQL container
+✅ **Data download** : MovieLens dataset fetched automatically
+✅ **Test execution** : 41 tests in ~4 seconds
+✅ **Status badge** : [![CI - Automated Tests](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml)
+
+### Monitoring
+
+✅ **Logging configured** : `src/utils/logger.py`
+✅ **Three loggers** : app_logger, ml_logger, etl_logger
+✅ **Log files** : `logs/` directory with daily rotation
+✅ **Console output** : Real-time logging during execution
+
+## Phase 7: Documentation (✅ IN PROGRESS)
+
+### Documentation Files
+
+| File                      | Description                           | Status |
+|---------------------------|---------------------------------------|--------|
+| `README.md`               | Project overview, installation, usage | ✅ DONE |
+| `docs/architecture.md`    | System architecture diagram           | ✅ DONE |
+| `docs/api.md`             | API endpoints documentation           | ✅ DONE |
+| `docs/data_dictionary.md` | Data schema and fields description    | ✅ DONE |
+| `docs/deployment.md`      | Deployment guide                      | ✅ DONE |
+| `docs/contributing.md`    | Contribution guidelines               | ✅ DONE |
+| `docs/security.md`        | Security best practices               | ✅ DONE |
+
+### Documentation Highlights
+
+✅ **Professional structure** : Clear sections for all audiences
+✅ **Badges** : CI status, Python version, license
+✅ **Installation guide** : Step-by-step for new users
+✅ **API examples** : Curl commands and JSON responses
+✅ **Model comparison** : Performance metrics table
+✅ **Test commands** : How to run tests locally
+
+## 📊 Project Completion Status
+
+| Phase   | Description      | Status |
+|---------|------------------|--------|
+| Phase 0 | Preparation      | ✅ DONE |
+| Phase 1 | Infrastructure   | ✅ DONE |
+| Phase 2 | Data Collection  | ✅ DONE |
+| Phase 3 | Data Engineering | ✅ DONE |
+| Phase 4 | Machine Learning | ✅ DONE |
+| Phase 5 | Deployment       | ✅ DONE |
+| Phase 6 | Testing & CI/CD  | ✅ DONE |
+| Phase 7 | Documentation    | ✅ DONE |
+| Phase 8 | Cloud Deployment | ⏳ PLANNED |
+
 
 📊 Dataset: MovieLens
 
@@ -488,6 +551,20 @@ docker-compose logs -f
 # Access container shell
 docker exec -it movie-api bash
 
+### Test Commands
+
+```bash
+# Run all tests (excluding performance)
+pytest tests/ -v --ignore=tests/performance/
+
+# Run specific test categories
+pytest tests/data/ -v      # Data quality tests
+pytest tests/unit/ -v      # Unit tests
+pytest tests/integration/ -v  # Integration tests
+
+# Run with coverage
+pytest tests/ -v --cov=. --cov-report=term
+
 📚 Documentation
 
 Data Dictionary - Complete data documentation
@@ -496,26 +573,22 @@ API Documentation - Interactive API docs (when running)
 
 Notebooks Guide - Exploration notebooks overview
 
-🧪 Testing & Quality (Phase 6 - In Progress)
-Planned Tests
-✅ Data quality checks (implemented)
 
-⏳ Unit tests for individual functions
+🧪 Testing & Quality (Phase 6 - ✅ COMPLETE)
 
-⏳ Integration tests for API endpoints
+| Test Type | Count | Status |
+|-----------|-------|--------|
+| Data Tests | 16 | ✅ PASSED |
+| Unit Tests | 9 | ✅ PASSED |
+| Integration Tests | 13 | ✅ PASSED |
+| Performance Tests | 3 | ⏭️ Optional |
+| **TOTAL** | **41** | **✅ ALL PASSED** |
 
-⏳ Performance benchmarking
+**CI/CD Pipeline:** ✅ GitHub Actions active (all tests run on every push)
 
-⏳ Load testing
+**Monitoring:** ✅ Logs configured (`src/utils/logger.py`)
 
-Monitoring
-✅ API health checks
 
-✅ Error logging
-
-⏳ Performance metrics
-
-⏳ Model drift detection
 
 🤝 Contributing
 Contributions are welcome! Please follow these steps:

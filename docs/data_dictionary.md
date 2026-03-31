@@ -1,6 +1,10 @@
-# Data Dictionary - Movie Recommendation System
+# Data Dictionary – Movie Recommendation System
 
-## 📂 Data Structure
+This document describes the raw dataset, processed files, engineered features, and model artifacts used in the project.
+
+---
+
+## Data Structure
 
 data/
 │
@@ -10,7 +14,7 @@ data/
 │ ├── tags.csv
 │ └── links.csv
 │
-└── processed/ # Cleaned and enriched data
+└── processed/ # Cleaned & enriched data
 ├── movies_clean.csv
 ├── movies_enriched.csv
 ├── genre_counts.csv
@@ -19,220 +23,207 @@ data/
 └── user_movie_matrix_norm.csv
 
 
----
-
-## 📊 Raw Data Files
-
-### `movies.csv`
-| Column    | Type | Description                     | Example                                    |
-|-----------|------|---------------------------------|--------------------------------------------|
-| movieId   | int  | Unique movie ID                 | 1                                          |
-| title     | str  | Movie title with year           | Toy Story (1995)                           |
-| genres    | str  | Pipe-separated genres           | Adventure\|Animation\|Children\|Comedy\|Fantasy |
-
-### `ratings.csv`
-| Column    | Type  | Description                     | Example      |
-|-----------|-------|---------------------------------|--------------|
-| userId    | int   | Unique user ID                  | 1            |
-| movieId   | int   | References movies.csv           | 1            |
-| rating    | float | 0.5 to 5.0 (0.5 steps)          | 4.0          |
-| timestamp | int   | Unix timestamp                  | 964982703    |
-
-### `tags.csv`
-| Column    | Type  | Description                     | Example         |
-|-----------|-------|---------------------------------|-----------------|
-| userId    | int   | User who created the tag        | 1               |
-| movieId   | int   | Movie being tagged               | 1               |
-| tag       | str   | Free-text tag                   | funny animation |
-| timestamp | int   | Unix timestamp                  | 964982703       |
-
-### `links.csv`
-| Column    | Type  | Description                     |
-|-----------|-------|---------------------------------|
-| movieId   | int   | MovieLens movie ID              |
-| imdbId    | int   | IMDB movie ID                   |
-| tmdbId    | int   | TMDB movie ID                   |
 
 ---
 
-## 📈 Dataset Statistics
+## Raw Data Files
 
-| Metric                 | Value                     |
-|------------------------|---------------------------|
-| Total movies           | 9,742                     |
-| Total ratings          | 100,836                   |
-| Total users            | 610                       |
-| Average rating         | 3.53                      |
-| Most common genre      | Drama (5,032 movies)      |
-| Most rated movie       | Forrest Gump (341 ratings)|
-| Date range             | 1996-03-29 to 2018-09-24  |
+### movies.csv
 
----
+| Column  | Type   | Description                      | Example                              |
+|---------|--------|----------------------------------|--------------------------------------|
+| movieId | int    | Unique movie identifier          | 1                                    |
+| title   | str    | Movie title (with year)          | Toy Story (1995)                     |
+| genres  | str    | Pipe-separated genres            | Adventure|Animation|Children|Comedy    |
 
-## 🔧 Transformations (Phase 1-2-3)
+### ratings.csv
 
-| Transformation          | Description                                | Libraries          |
-|-------------------------|--------------------------------------------|--------------------|
-| Timestamp conversion    | Unix → datetime: `pd.to_datetime(timestamp, unit='s')` | pandas             |
-| Movie year extraction   | Regex `r'\((\d{4})\)'` from title          | pandas             |
-| Genre splitting         | Split pipe-separated genres with `str.split('|')` | pandas             |
-| Missing value handling  | `fillna()` for NULL values                 | pandas, Spark      |
-| Duplicate removal       | `dropDuplicates()` for clean data          | Spark              |
+| Column    | Type   | Description                      | Example      |
+|-----------|--------|----------------------------------|--------------|
+| userId    | int    | User identifier                  | 1            |
+| movieId   | int    | Reference to movies.csv          | 1            |
+| rating    | float  | Rating from 0.5 to 5.0           | 4.0          |
+| timestamp | int    | Unix timestamp                   | 964982703    |
 
----
+### tags.csv
 
-## 📁 Generated Files - Phase 3 (Spark ETL)
+| Column    | Type   | Description                      | Example         |
+|-----------|--------|----------------------------------|-----------------|
+| userId    | int    | User who created the tag         | 1               |
+| movieId   | int    | Movie being tagged               | 1               |
+| tag       | str    | Free-text tag                    | funny animation |
+| timestamp | int    | Unix timestamp                   | 964982703       |
 
-### `movies_clean.csv` (in `data/processed/`)
-| Column       | Type | Description               | Example                                        |
-|--------------|------|---------------------------|------------------------------------------------|
-| movieId      | int  | Movie ID                  | 1                                              |
-| title        | str  | Movie title               | Toy Story (1995)                               |
-| genres       | str  | Cleaned genres            | Adventure\|Animation\|Children\|Comedy\|Fantasy |
-| title_length | int  | Length of title string    | 16                                             |
-| genre_count  | int  | Number of genres          | 5                                              |
+### links.csv
 
-### `user_stats.csv` (in project root)
-| Column       | Type  | Description                       | Example |
-|--------------|-------|-----------------------------------|---------|
-| userId       | int   | Unique user ID                    | 148     |
-| rating_count | int   | Number of ratings by this user    | 48      |
-| avg_rating   | float | Average rating given by this user | 3.74    |
-| std_rating   | float | Standard deviation of ratings     | 0.68    |
-| min_rating   | float | Minimum rating given              | 1.5     |
-| max_rating   | float | Maximum rating given              | 5.0     |
-
-### `movie_stats.csv` (in project root)
-| Column       | Type  | Description                       | Example |
-|--------------|-------|-----------------------------------|---------|
-| movieId      | int   | Unique movie ID                   | 356     |
-| rating_count | int   | Number of ratings received        | 329     |
-| avg_rating   | float | Average rating                    | 4.16    |
-| std_rating   | float | Standard deviation of ratings     | 0.83    |
-| min_rating   | float | Minimum rating received           | 0.5     |
-| max_rating   | float | Maximum rating received           | 5.0     |
-
-### `top_movies.csv` (in project root)
-| Column       | Type  | Description               |
-|--------------|-------|---------------------------|
-| movieId      | int   | Movie ID                  |
-| rating_count | int   | Number of ratings         |
-| avg_rating   | float | Average rating            |
-| std_rating   | float | Standard deviation        |
-| min_rating   | float | Minimum rating            |
-| max_rating   | float | Maximum rating            |
-
-### `movies_enriched.csv` (in `data/processed/`)
-| Column       | Type  | Description                       | Example                           |
-|--------------|-------|-----------------------------------|-----------------------------------|
-| movieId      | int   | Movie ID                          | 1                                 |
-| title        | str   | Movie title                       | Toy Story (1995)                  |
-| genres       | str   | Pipe-separated genres             | Adventure\|Animation\|Children    |
-| year_str     | str   | Year extracted from title         | 1995                              |
-| genre_count  | int   | Number of genres                  | 5                                 |
-| rating_count | int   | Number of ratings received        | 215                               |
-| avg_rating   | float | Average rating                    | 3.92                              |
-| std_rating   | float | Standard deviation                | 0.83                              |
-| min_rating   | float | Minimum rating                    | 0.5                               |
-| max_rating   | float | Maximum rating                    | 5.0                               |
-
-### `genre_counts.csv` (in `data/processed/`)
-| Column | Type | Description                  | Example |
-|--------|------|------------------------------|---------|
-| genre  | str  | Genre name                   | Drama   |
-| count  | int  | Number of movies in this genre | 4,361   |
+| Column  | Type   | Description                      |
+|---------|--------|----------------------------------|
+| movieId | int    | MovieLens ID                     |
+| imdbId  | int    | IMDb ID                          |
+| tmdbId  | int    | TMDB ID                          |
 
 ---
 
-## 📁 Generated Files - Phase 4 (Machine Learning)
+## Core Transformations
 
-### Feature Files (in `data/processed/`)
+| Transformation      | Description                         | Tool           |
+|---------------------|-------------------------------------|----------------|
+| Timestamp conversion| Unix to datetime                    | pandas         |
+| Year extraction     | From title using regex              | pandas         |
+| Genre parsing       | Split pipe-separated genres         | pandas         |
+| Missing values      | fillna / typed defaults             | pandas, Spark  |
+| Duplicate removal   | drop_duplicates / dropDuplicates    | pandas, Spark  |
 
-#### `movie_features.csv`
-| Column(s)                        | Type  | Description                              | Source Library                           |
-|----------------------------------|-------|------------------------------------------|------------------------------------------|
-| movieId                          | int   | Unique movie identifier                  | -                                        |
-| title                            | str   | Movie title                              | -                                        |
-| year_str                         | str   | Year extracted from title                | -                                        |
-| genre_count                      | int   | Number of genres for this movie          | -                                        |
-| rating_count                     | int   | Total number of ratings received         | -                                        |
-| avg_rating                       | float | Average rating                           | -                                        |
-| std_rating                       | float | Standard deviation of ratings            | -                                        |
-| (no genres listed) to Western    | int   | One-hot encoded genre columns (20 total) | `sklearn.preprocessing.MultiLabelBinarizer` |
-| tag_0 to tag_49                  | float | TF-IDF features from user tags (50 total)| `sklearn.feature_extraction.text.TfidfVectorizer` |
+---
 
-**Shape:** (9,742 rows, 77 columns)
+## Processed Files
 
-#### `user_movie_matrix.csv`
-- **Rows:** 610 users (userId)
-- **Columns:** 9,724 movies (movieId)
-- **Values:** Original ratings (0.5 to 5.0)
-- **Sparsity:** 1.70%
+### movies_clean.csv
 
-#### `user_movie_matrix_norm.csv`
+| Column       | Type   | Description                          |
+|--------------|--------|--------------------------------------|
+| movieId      | int    | Movie identifier                     |
+| title        | str    | Movie title                          |
+| genres       | str    | Cleaned genres                       |
+| title_length | int    | Title character length               |
+| genre_count  | int    | Number of genres                     |
+
+### movies_enriched.csv
+
+| Column       | Type   | Description                          |
+|--------------|--------|--------------------------------------|
+| movieId      | int    | Movie identifier                     |
+| title        | str    | Movie title                          |
+| genres       | str    | Pipe-separated genres                |
+| year_str     | str    | Extracted year                       |
+| genre_count  | int    | Number of genres                     |
+| rating_count | int    | Number of ratings received           |
+| avg_rating   | float  | Average rating                       |
+| std_rating   | float  | Rating standard deviation            |
+| min_rating   | float  | Minimum rating                       |
+| max_rating   | float  | Maximum rating                       |
+
+### user_stats.csv
+
+| Column       | Type   | Description                          |
+|--------------|--------|--------------------------------------|
+| userId       | int    | User identifier                      |
+| rating_count | int    | Number of ratings                    |
+| avg_rating   | float  | Average rating                       |
+| std_rating   | float  | Rating standard deviation            |
+| min_rating   | float  | Minimum rating                       |
+| max_rating   | float  | Maximum rating                       |
+
+### movie_stats.csv
+
+| Column       | Type   | Description                          |
+|--------------|--------|--------------------------------------|
+| movieId      | int    | Movie identifier                     |
+| rating_count | int    | Number of ratings                    |
+| avg_rating   | float  | Average rating                       |
+| std_rating   | float  | Rating standard deviation            |
+| min_rating   | float  | Minimum rating                       |
+| max_rating   | float  | Maximum rating                       |
+
+### genre_counts.csv
+
+| Column | Type   | Description                          |
+|--------|--------|--------------------------------------|
+| genre  | str    | Genre name                           |
+| count  | int    | Number of movies in genre            |
+
+---
+
+## ML Features & Matrices
+
+### movie_features.csv
+
+| Column(s)                    | Type    | Description                          |
+|------------------------------|---------|--------------------------------------|
+| movieId                      | int     | Movie identifier                     |
+| title                        | str     | Movie title                          |
+| year_str                     | str     | Year extracted                       |
+| genre_count                  | int     | Number of genres                     |
+| rating_count                 | int     | Number of ratings                    |
+| avg_rating                   | float   | Average rating                       |
+| std_rating                   | float   | Standard deviation                   |
+| genre_Action ... genre_Western| int     | One-hot encoded genres (20 columns)  |
+| tag_0 ... tag_49             | float   | TF-IDF features (50 columns)         |
+
+**Shape:** 9,742 rows × 77 columns
+
+### user_movie_matrix.csv
+
 - **Rows:** 610 users
 - **Columns:** 9,724 movies
-- **Values:** (rating - user_mean)
-- **Use:** Input for collaborative filtering models
+- **Values:** Original ratings (sparse, 1.7% fill rate)
 
-### Model Files (in project root)
+### user_movie_matrix_norm.csv
 
-| File                | Format | Description                              | Library                                      |
-|---------------------|--------|------------------------------------------|----------------------------------------------|
-| `svd_model.pkl`     | joblib | Trained SVD matrix factorization model   | `sklearn.decomposition.TruncatedSVD`         |
-| `knn_model.pkl`     | joblib | Trained KNN collaborative filtering model| `sklearn.neighbors.NearestNeighbors`         |
-| `content_model.pkl` | joblib | Content-based similarity matrix          | `sklearn.metrics.pairwise.cosine_similarity` |
-| `hybrid_model.pkl`  | joblib | Hybrid model configuration               | Custom combination                           |
-
-### Evaluation Files (in project root)
-
-| File                           | Description                     | Contents                                      |
-|--------------------------------|---------------------------------|----------------------------------------------|
-| `model_evaluation_results.csv` | Model comparison                | RMSE, MAE, similarity metrics for all models |
-
-### Experiment Tracking
-
-| Location   | Description                                                |
-|------------|------------------------------------------------------------|
-| `mlruns/`  | Directory containing all MLFlow experiment data           |
-| `mlflow ui`| Command to launch the MLFlow interface at http://localhost:5000 |
+- **Rows:** 610 users
+- **Columns:** 9,724 movies
+- **Values:** Normalized ratings (rating - user_mean)
+- **Use:** Input for collaborative filtering (ALS/SVD, KNN)
 
 ---
 
-## 📊 Model Performance Summary
+## Database Schema (MySQL Gold Layer)
 
-| Model     | RMSE  | MAE   | Similarity | Hit Rate@10 |
-|-----------|-------|-------|------------|-------------|
-| **SVD**   | 0.746 | 0.530 | -          | -           |
-| **KNN**   | -     | -     | 0.157      | 93.4%       |
-| **Content**| -    | -     | 1.000      | -           |
-| **Hybrid**| -     | -     | -          | -           |
+### movies table
 
----
+| Column   | Type        | Description                          |
+|----------|-------------|--------------------------------------|
+| movieId  | INT         | Primary key                          |
+| title    | VARCHAR     | Movie title                          |
+| year     | INT         | Year (nullable)                      |
+| genres   | VARCHAR     | Pipe-separated genres (nullable)     |
 
-## 📚 Related Documentation
+### ratings table
 
-| Document            | Location      | Description                             |
-|---------------------|---------------|-----------------------------------------|
-| `model_card.md`     | `docs/`       | Detailed model information and limitations |
-| `README.md`         | Root          | Project overview and quick start        |
-| `notebooks/README.md`| `notebooks/`  | Notebook documentation                  |
-
----
-
-## 🔧 Transformations Summary by Phase
-
-| Phase      | Key Transformations                      | Output Files                                      |
-|------------|------------------------------------------|---------------------------------------------------|
-| **Phase 1-2** | Docker setup, MySQL, EDA                 | Database tables                                   |
-| **Phase 3**   | Spark ETL, cleaning, aggregations        | `user_stats.csv`, `movie_stats.csv`, `movies_enriched.csv` |
-| **Phase 4**   | Feature engineering, ML models, evaluation | `movie_features.csv`, model `.pkl` files          |
+| Column    | Type        | Description                          |
+|-----------|-------------|--------------------------------------|
+| userId    | INT         | User identifier                      |
+| movieId   | INT         | Foreign key to movies                |
+| rating    | DECIMAL(2,1)| Rating from 0.5 to 5.0               |
+| timestamp | BIGINT      | Unix timestamp                       |
 
 ---
 
-## 📝 Notes
+## Model Artifacts
 
-- All CSV files can be loaded with `pandas.read_csv()`
-- Model files can be loaded with `joblib.load()`
-- MLFlow experiments can be viewed with `mlflow ui`
-- The feature matrix `movie_features.csv` is ready for any scikit-learn model
+### Saved Models
+
+| File                | Format  | Description                              |
+|---------------------|---------|------------------------------------------|
+| svd_model.pkl       | joblib  | SVD / Matrix factorization model         |
+| knn_model.pkl       | joblib  | KNN collaborative filtering model        |
+| content_model.pkl   | joblib  | Content-based similarity model           |
+| hybrid_model.pkl    | joblib  | Combined model configuration             |
+
+### Evaluation Results
+
+| File                           | Description                          |
+|--------------------------------|--------------------------------------|
+| model_evaluation_results.csv   | RMSE, MAE, similarity scores         |
+
+---
+
+## Dataset Statistics (Global)
+
+| Metric              | Value                               |
+|---------------------|-------------------------------------|
+| Total movies        | 9,742                               |
+| Total ratings       | 100,836                             |
+| Total users         | 610                                 |
+| Average rating      | 3.53                                |
+| Most common genre   | Drama (4,361 movies)                |
+| Date range          | 1996-03-29 to 2018-09-24            |
+
+---
+
+## Notes
+
+- All CSVs load with `pandas.read_csv()`
+- Models load with `joblib.load()`
+- `movie_features.csv` is ready for any scikit-learn model
+- Raw data files are excluded from Git (`.gitignore`)
