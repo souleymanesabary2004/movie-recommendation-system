@@ -8,10 +8,7 @@ import pytest
 # Chemin de la racine du projet
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Vérifier si les données existent
-DATA_AVAILABLE = os.path.exists(os.path.join(PROJECT_ROOT, 'data', 'raw', 'movies.csv'))
 
-@pytest.mark.skipif(not DATA_AVAILABLE, reason="Data files not available in CI")
 class TestDataSchema:
     """Verify that data files have the correct columns"""
 

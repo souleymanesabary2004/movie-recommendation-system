@@ -5,7 +5,6 @@ import os
 import sys
 import pytest
 import mysql.connector
-from mysql.connector import errorcode
 
 # Ajouter le chemin du projet pour importer les modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -14,7 +13,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from dotenv import load_dotenv
 load_dotenv()
 
-# Chemin de la racine du projet
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -26,24 +24,20 @@ class TestDatabaseConnection:
         """Return database configuration from environment"""
         return {
             'user': 'root',
-            'password': os.getenv('MYSQL_ROOT_PASSWORD'),
-            'host': os.getenv('MYSQL_HOST', 'localhost'),
-            'port': int(os.getenv('MYSQL_PORT', 2004)),
-            'database': os.getenv('MYSQL_DATABASE', 'movie_recommendation')
+            'password': os.getenv('MYSQL_ROOT_PASSWORD', 'rootpassword'),
+            'host': os.getenv('MYSQL_HOST', '127.0.0.1'),
+            'port': int(os.getenv('MYSQL_PORT', 3306)),
+            'database': os.getenv('MYSQL_DATABASE', 'movie_recommendation_test')
         }
 
     def test_connection(self, db_config):
         """Test that we can connect to MySQL"""
-        try:
-            conn = mysql.connector.connect(**db_config)
-            assert conn.is_connected()
-            conn.close()
-        except mysql.connector.Error as err:
-            pytest.fail(f"Connection failed: {err}")
+        conn = mysql.connector.connect(**db_config)
+        assert conn.is_connected()
+        conn.close()
 
     def test_database_exists(self, db_config):
         """Test that the database exists"""
-        # Se connecter sans base spécifique
         config_no_db = {k: v for k, v in db_config.items() if k != 'database'}
         conn = mysql.connector.connect(**config_no_db)
         cursor = conn.cursor()

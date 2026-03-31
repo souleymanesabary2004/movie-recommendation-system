@@ -4,7 +4,7 @@
 import os
 import pytest
 
-# Chemin de la racine du projet (remonte de 3 dossiers depuis ce fichier)
+# Chemin de la racine du projet
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
