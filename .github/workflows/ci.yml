@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     services:
       mysql:
@@ -21,7 +21,11 @@ jobs:
           MYSQL_DATABASE: movie_recommendation_test
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
     - name: Checkout code
@@ -46,18 +50,16 @@ jobs:
         curl -L -o data/raw/movies.csv https://files.grouplens.org/datasets/movielens/ml-latest-small/movies.csv
         curl -L -o data/raw/ratings.csv https://files.grouplens.org/datasets/movielens/ml-latest-small/ratings.csv
         echo "Data downloaded:"
-        ls data/raw/
+        ls -la data/raw/
 
     - name: Wait for MySQL
       run: |
-        echo "Waiting for MySQL to be ready..."
-        for ($i=0; $i -lt 30; $i++) {
-          try {
-            mysql -h 127.0.0.1 -P 3306 -u root -prootpassword -e "SELECT 1"
-            if ($LASTEXITCODE -eq 0) { break }
-          } catch { }
-          Start-Sleep -Seconds 2
-        }
+        sudo apt-get update
+        sudo apt-get install -y mysql-client
+        while ! mysqladmin ping -h"127.0.0.1" -P 3306 --silent; do
+          echo "Waiting for MySQL..."
+          sleep 2
+        done
 
     - name: Initialize database
       run: |
@@ -98,10 +100,10 @@ jobs:
 
     - name: Setup environment variables
       run: |
-        echo "MYSQL_HOST=127.0.0.1" >> $env:GITHUB_ENV
-        echo "MYSQL_PORT=3306" >> $env:GITHUB_ENV
-        echo "MYSQL_ROOT_PASSWORD=rootpassword" >> $env:GITHUB_ENV
-        echo "MYSQL_DATABASE=movie_recommendation_test" >> $env:GITHUB_ENV
+        echo "MYSQL_HOST=127.0.0.1" >> $GITHUB_ENV
+        echo "MYSQL_PORT=3306" >> $GITHUB_ENV
+        echo "MYSQL_ROOT_PASSWORD=rootpassword" >> $GITHUB_ENV
+        echo "MYSQL_DATABASE=movie_recommendation_test" >> $GITHUB_ENV
 
     - name: Run all tests
       run: |
