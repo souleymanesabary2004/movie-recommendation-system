@@ -1,10 +1,13 @@
+[![CI - Automated Tests](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml/badge.svg)](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml)
+
+
 # 🎬 Movie Recommendation System
 
-An end‑to‑end **Big Data & Machine Learning** project that recommends movies to users based on their preferences.  
+
+An end‑to‑end **Big Data & Machine Learning** project that recommends movies to users based on their preferences.
+  
 **Start date:** 01 January 2026 · **Personal project**
 
-
-An **end-to-end Big Data & Machine Learning** project that recommends movies to users based on their preferences.
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://python.org)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-orange.svg)](https://mysql.com)
