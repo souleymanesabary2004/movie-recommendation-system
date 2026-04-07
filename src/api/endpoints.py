@@ -10,6 +10,17 @@ import time
 from . import schemas
 from .dependencies import get_models
 
+import redis
+import json
+import os
+
+# Connexion Redis
+redis_client = redis.Redis(
+    host=os.getenv('REDIS_HOST', 'localhost'),
+    port=int(os.getenv('REDIS_PORT', 6379)),
+    decode_responses=True
+)
+
 router = APIRouter()
 
 @router.get("/")
@@ -21,12 +32,30 @@ def read_root():
         "version": "1.0.0"
     }
 
+@router.get("/health")
+def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "models_loaded": True
+    }
+
 @router.get("/recommendations/{user_id}", response_model=schemas.RecommendationsResponse)
 def get_recommendations(user_id: int, models_data=Depends(get_models)):
     """
     Get movie recommendations for a specific user
     """
     models, movie_features, matrix = models_data
+    
+    # Vérifier le cache Redis
+    cache_key = f"rec:{user_id}"
+    cached = redis_client.get(cache_key)
+    
+    if cached:
+        print(f"Cache hit for user {user_id}")
+        return json.loads(cached)
+    
+    print(f"Cache miss for user {user_id}")
     
     if 'knn' not in models:
         raise HTTPException(status_code=503, detail="KNN model not available")
@@ -71,10 +100,15 @@ def get_recommendations(user_id: int, models_data=Depends(get_models)):
         # Sort by score
         recommendations.sort(key=lambda x: x["score"], reverse=True)
         
-        return {
+        result = {
             "user_id": user_id,
             "recommendations": recommendations[:10]
         }
+        
+        # Stocker dans Redis (expiration 1 heure = 3600 secondes)
+        redis_client.setex(cache_key, 3600, json.dumps(result))
+        
+        return result
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating recommendations: {str(e)}")
@@ -100,8 +134,8 @@ def get_movie_stats(movie_id: int, models_data=Depends(get_models)):
         "rating_count": int(movie_data.iloc[0]['rating_count']),
         "avg_rating": float(movie_data.iloc[0]['avg_rating']),
         "std_rating": float(movie_data.iloc[0]['std_rating']),
-        "min_rating": 0.0,  # Note minimale possible dans MovieLens
-        "max_rating": 5.0    # Note maximale possible dans MovieLens
+        "min_rating": 0.0,
+        "max_rating": 5.0
     }
 
 @router.post("/feedback", response_model=schemas.FeedbackResponse)
@@ -109,8 +143,6 @@ def post_feedback(feedback: schemas.FeedbackRequest):
     """
     Collect user feedback for future model improvements
     """
-    # Ici on pourrait sauvegarder dans un fichier ou une base
-    # Pour l'instant, on simule
     print(f"Feedback received: {feedback}")
     
     return {

@@ -1,0 +1,14 @@
+movieId,title,genres,genre_array,genre_count,year_str,rating_count,avg_rating,std_rating,min_rating,max_rating,year
+40697,Babylon 5,Sci-Fi,['Sci-Fi'],1,,2,2.25,2.4748737341529163,0.5,4.0,0
+140956,Ready Player One,Action|Sci-Fi|Thriller,"['Action', 'Sci-Fi', 'Thriller']",3,,4,3.5,0.7071067811865476,3.0,4.5,0
+143410,Hyena Road,(no genres listed),['(no genres listed)'],0,,1,2.0,0.0,2.0,2.0,0
+147250,The Adventures of Sherlock Holmes and Doctor Watson,(no genres listed),['(no genres listed)'],0,,1,5.0,0.0,5.0,5.0,0
+149334,Nocturnal Animals,Drama|Thriller,"['Drama', 'Thriller']",2,,1,3.0,0.0,3.0,3.0,0
+156605,Paterson,(no genres listed),['(no genres listed)'],0,,1,4.5,0.0,4.5,4.5,0
+162414,Moonlight,Drama,['Drama'],1,,1,5.0,0.0,5.0,5.0,0
+167570,The OA,(no genres listed),['(no genres listed)'],0,,1,4.0,0.0,4.0,4.0,0
+171495,Cosmos,(no genres listed),['(no genres listed)'],0,,2,4.5,0.7071067811865476,4.0,5.0,0
+171631,Maria Bamford: Old Baby,(no genres listed),['(no genres listed)'],0,,1,1.0,0.0,1.0,1.0,0
+171749,Death Note: Desu nôto (2006–2007),(no genres listed),['(no genres listed)'],0,,1,5.0,0.0,5.0,5.0,0
+171891,Generation Iron 2,(no genres listed),['(no genres listed)'],0,,1,3.5,0.0,3.5,3.5,0
+176601,Black Mirror,(no genres listed),['(no genres listed)'],0,,1,5.0,0.0,5.0,5.0,0

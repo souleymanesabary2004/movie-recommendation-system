@@ -9,6 +9,11 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics import mean_squared_error
 import joblib
 import os
+import mlflow
+import mlflow.sklearn
+
+# Configuration MLflow
+mlflow.set_experiment("Movie_Recommendation_SVD")
 
 def load_data():
     """Load pre-computed matrices"""
@@ -124,23 +129,41 @@ def main():
     print(f"   Non-zero entries: {(R != 0).sum():,}")
     print(f"   Fill rate: {(R != 0).sum() / R.size * 100:.2f}%")
     
-    # Entraîner
-    model, W, H, R_pred = train_svd(
-        matrix, 
-        n_factors=params['n_factors'],
-        n_iter=params['n_iter']
-    )
-    
-    # Évaluer
-    rmse, mae = evaluate(model, R, R_pred)
-    metrics = {'rmse': rmse, 'mae': mae}
-    
-    # Sauvegarder
-    save_model(model, params, metrics)
-    
-    print("\n" + "="*50)
-    print("TRAINING COMPLETE")
-    print("="*50)
+    # Démarrer MLflow run
+    with mlflow.start_run(run_name="SVD_Training"):
+        # Log des paramètres
+        mlflow.log_param("n_factors", params['n_factors'])
+        mlflow.log_param("n_iter", params['n_iter'])
+        mlflow.log_param("matrix_shape", f"{R.shape[0]}x{R.shape[1]}")
+        mlflow.log_param("fill_rate", f"{(R != 0).sum() / R.size * 100:.2f}%")
+        
+        # Entraîner
+        model, W, H, R_pred = train_svd(
+            matrix, 
+            n_factors=params['n_factors'],
+            n_iter=params['n_iter']
+        )
+        
+        # Évaluer
+        rmse, mae = evaluate(model, R, R_pred)
+        metrics = {'rmse': rmse, 'mae': mae}
+        
+        # Log des métriques
+        mlflow.log_metric("RMSE", rmse)
+        mlflow.log_metric("MAE", mae)
+        mlflow.log_metric("explained_variance", model.explained_variance_ratio_.sum())
+        
+        # Log du modèle
+        mlflow.sklearn.log_model(model, "svd_model")
+        
+        # Sauvegarder localement
+        save_model(model, params, metrics)
+        
+        print("\n" + "="*50)
+        print("TRAINING COMPLETE")
+        print("="*50)
+        print("\n✅ MLflow tracking enabled")
+        print("   View results at: http://localhost:5000")
     
     return model, W, H
 

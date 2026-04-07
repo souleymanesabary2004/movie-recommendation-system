@@ -15,7 +15,7 @@ def recommendations_page():
         with st.spinner("Loading..."):
             try:
                 # Appel API
-                r = requests.get(f"http://api:8000/recommendations/{user_id}")
+                r = requests.get(f"http://localhost:8000/recommendations/{user_id}")
                 
                 if r.status_code == 200:
                     data = r.json()
@@ -38,7 +38,7 @@ def stats_page():
     if st.button("View statistics"):
         with st.spinner("Loading..."):
             try:
-                r = requests.get(f"http://api:8000/movies/{movie_id}/stats")
+                r = requests.get(f"http://localhost:8000/movies/{movie_id}/stats")
                 
                 if r.status_code == 200:
                     data = r.json()
@@ -81,7 +81,7 @@ def feedback_page():
                         "rating": rating,
                         "liked": liked
                     }
-                    r = requests.post("http://api:8000/feedback", json=payload)
+                    r = requests.post("http://localhost:8000/feedback", json=payload)
                     
                     if r.status_code == 200:
                         st.success("Feedback sent successfully!")
@@ -100,7 +100,7 @@ def sentiment_page():
     if st.button("Analyze"):
         with st.spinner("Analyzing..."):
             try:
-                r = requests.post("http://api:8000/sentiment", json={"text": text})
+                r = requests.post("http://localhost:8000/sentiment", json={"text": text})
                 
                 if r.status_code == 200:
                     data = r.json()
