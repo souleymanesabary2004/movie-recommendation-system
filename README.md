@@ -1,5 +1,12 @@
 [![CI - Automated Tests](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/souleymanesabary2004/movie-recommendation-system/actions/workflows/ci.yml)
 
+## 📹 Video Demo
+- [Full playlist]: https://studio.youtube.com/channel/UCZGYwTpSYxFAuXcNEE-U4Jg/content/playlists?filter=%5B%5D&sort=%7B%22columnType%22%3A%22lastTimeUpdated%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D
+
+- [Project presentation](https://youtu.be/TA62gkSfDuU)
+
+- [Live demo](https://youtu.be/-w4UCkESmNY)
+
 # 🎬 Movie Recommendation System
 
 
@@ -289,7 +296,7 @@ Phase 5: Deployment (Complete)
 | Data Tests (integrity, schema, values) | 16     | ✅ PASSED |
 | Unit Tests (ETL, models)               | 9      | ✅ PASSED |
 | Integration Tests (database, pipeline) | 13     | ✅ PASSED |
-| Performance Tests (optional)           | 3      | ⏭️ SKIPPED |
+| Performance Tests (optional)           | 3      | ✅ PASSED |
 | **TOTAL**                              | **41** | **✅ ALL PASSED** |
 
 ### Test Coverage
