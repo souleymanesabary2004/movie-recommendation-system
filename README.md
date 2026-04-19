@@ -7,6 +7,8 @@
 
 - [Live demo](https://youtu.be/-w4UCkESmNY)
 
+- [Technical poster](poster/poster_movie_recommendation.pdf)
+
 # 🎬 Movie Recommendation System
 
 
